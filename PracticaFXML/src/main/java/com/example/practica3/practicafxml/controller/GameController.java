@@ -7,6 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -38,12 +40,21 @@ public class GameController {
 
     private void initializeBoard() {
         gameBoard.getChildren().clear(); // Limpiar tablero si se reutiliza
+        float n = 1;
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
-                Button card = new Button("?");
+                Button card = new Button();
                 card.setPrefSize(80, 80);
+                int parteEntera = (int) n;
+                Image imagen = new Image(getClass().getResourceAsStream("/images/img" + parteEntera + ".png"));
+                n += 0.5;
+                ImageView imageView = new ImageView(imagen);
+                imageView.setFitWidth(75);
+                imageView.setFitHeight(75);
+                card.setGraphic(imageView);
                 card.setOnAction(e -> {
                     // Lógica para girar cartas
+
                 });
                 gameBoard.add(card, j, i);
             }
@@ -86,4 +97,6 @@ public class GameController {
             }
         });
     }
+
+
 }
