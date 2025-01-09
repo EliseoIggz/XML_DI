@@ -12,8 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class GameController {
     @FXML
@@ -24,7 +23,7 @@ public class GameController {
     private Jugador jugador;
     private Stage stage;
     private Timer timer;
-    private int tiempoRestante = 30; // Segundos del temporizador
+    private int tiempoRestante = 45; // Segundos del temporizador
     private int filas;
     private int columnas;
 
@@ -35,30 +34,134 @@ public class GameController {
         this.columnas = columnas;
 
         initializeBoard();
-        startTimer();
     }
 
     private void initializeBoard() {
         gameBoard.getChildren().clear(); // Limpiar tablero si se reutiliza
-        float n = 1;
-        for (int i = 0; i < filas; i++) {
-            for (int j = 0; j < columnas; j++) {
+
+        // Generar una lista de imágenes duplicadas para formar los pares
+        List<Image> images = new ArrayList<>();
+        for (int i = 1; i <= (filas * columnas) / 2; i++) {
+            Image image = new Image(getClass().getResourceAsStream("/images/img" + i + ".png"));
+            images.add(image);
+            images.add(image); // Añadir la pareja
+        }
+
+        // Mezclar las imágenes aleatoriamente
+        Collections.shuffle(images);
+
+        // Inicializar el tablero con las imágenes tapadas
+        Button[][] buttons = new Button[filas][columnas];
+        ImageView[][] imageViews = new ImageView[filas][columnas];
+        boolean[][] revealed = new boolean[filas][columnas]; // Control de las cartas descubiertas
+
+        for (int i = 0, index = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++, index++) {
+                final int row = i; // Capturar valor de i
+                final int col = j; // Capturar valor de j
                 Button card = new Button();
                 card.setPrefSize(80, 80);
-                int parteEntera = (int) n;
-                Image imagen = new Image(getClass().getResourceAsStream("/images/img" + parteEntera + ".png"));
-                n += 0.5;
-                ImageView imageView = new ImageView(imagen);
+
+                // Imagen asociada al botón
+                ImageView imageView = new ImageView(images.get(index));
                 imageView.setFitWidth(75);
                 imageView.setFitHeight(75);
-                card.setGraphic(imageView);
-                card.setOnAction(e -> {
-                    // Lógica para girar cartas
+                imageView.setVisible(false); // Ocultar la imagen inicialmente
+                imageViews[i][j] = imageView;
 
+                card.setGraphic(imageView);
+                // Card = boton
+                // imageView = foto de la  fruta
+                // row = fila , col = columna
+                // Matrices buttons, imageViews, revealed(matriz de que cartas estan levantadas)
+                card.setOnAction(e -> {
+                    handleCardClick(card, imageView, row, col, revealed);
                 });
+
                 gameBoard.add(card, j, i);
+                // Añadimos a la matriz de botones el boton que hemos configurada con todo listo
+                buttons[i][j] = card;
             }
         }
+
+        // Iniciar el temporizador al cargar el tablero
+        startTimer();
+    }
+
+    // Control de clic en las cartas
+    private Button firstCard = null;
+    private ImageView firstImageView = null;
+    private int firstRow = -1, firstCol = -1;
+    private void handleCardClick(Button card,
+                                 ImageView imageView,
+                                 int row,
+                                 int col,
+//                                 Button[][] buttons,
+//                                 ImageView[][] imageViews,
+                                 boolean[][] revealed) {
+
+        if (revealed[row][col] || card == firstCard) {
+
+            return; // Si ya está descubierta o es la misma carta, ignorar
+        }
+        // Mostrar la carta
+        imageView.setVisible(true);
+        card.setStyle("-fx-background-color: white;");
+
+        if (firstCard == null) {
+            // Primer clic
+            firstCard = card;
+            firstImageView = imageView;
+            firstRow = row;
+            firstCol = col;
+        } else {
+            // Segundo clic
+            if (imageView.getImage().equals(firstImageView.getImage())) {
+                // Si coinciden, mantenerlas descubiertas
+                revealed[row][col] = true;
+                revealed[firstRow][firstCol] = true;
+                firstCard = null;
+                firstImageView = null;
+                firstRow = -1;
+                firstCol = -1;
+
+                // Comprobar si el juego ha terminado
+                if (isGameWon(revealed)) {
+                    endGame(true);
+                }
+            } else {
+                // Si no coinciden, esperar y volver a taparlas
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Platform.runLater(() -> {
+                            imageView.setVisible(false);
+                            card.setStyle("-fx-background-color: #d6d6d6;");
+                            firstImageView.setVisible(false);
+                            firstCard.setStyle("-fx-background-color: #d6d6d6;");
+                            // Reiniciar el estado del primer clic
+                            firstCard = null;
+                            firstImageView = null;
+                            firstRow = -1;
+                            firstCol = -1;
+                        });
+                    }
+                }, 1000); // Esperar 1 segundo
+            }
+        }
+    }
+
+    // Método para comprobar si todas las cartas están descubiertas
+    private boolean isGameWon(boolean[][] revealed) {
+        for (boolean[] row : revealed) {
+            for (boolean cell : row) {
+                if (!cell) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void startTimer() {
@@ -80,6 +183,10 @@ public class GameController {
     }
 
     private void endGame(boolean ganado) {
+        // Detener el temporizador si todavía está activo
+        if (timer != null) {
+            timer.cancel();
+        }
         Platform.runLater(() -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/practica3/practicafxml/record-view.fxml"));
@@ -87,7 +194,7 @@ public class GameController {
 
                 RecordController recordController = loader.getController();
                 if (ganado) {
-                    jugador.setTiempo(30 - tiempoRestante); // Calcular tiempo total
+                    jugador.setTiempo(45 - tiempoRestante); // Calcular tiempo total
                 }
                 recordController.showResult(jugador, ganado);
 
