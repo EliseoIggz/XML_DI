@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="214.0" prefWidth="242.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.practica3.practicafxml.controller.HelloController">
-    <TextField fx:id="nombreJugadorField" promptText="Introduce tu nombre" />
+<VBox alignment="CENTER" prefHeight="300.0" prefWidth="300.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.practica3.practicafxml.controller.HelloController">
+   <Label fx:id="textoJugador" alignment="TOP_CENTER" text="Nombre de jugador: ">
+      <VBox.margin>
+         <Insets />
+      </VBox.margin>
+   </Label>
+    <TextField fx:id="nombreJugadorField" promptText="Introduce tu nombre">
+      <VBox.margin>
+         <Insets left="30.0" right="30.0" />
+      </VBox.margin></TextField>
+   <Label fx:id="textoDificultad" text="Escoge la dificultad: " />
     <Button fx:id="botonFacil" onAction="#onBotonFacilClick" text="Modo Fácil (4x3)" />
     <Button fx:id="botonDificil" onAction="#onBotonDificilClick" text="Modo Difícil (5x4)" />
 </VBox>

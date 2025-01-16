@@ -1,6 +1,7 @@
 package com.example.practica3.practicafxml.controller;
 
 import com.example.practica3.practicafxml.model.Jugador;
+import com.example.practica3.practicafxml.utils.PantallaUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.*;
 
 public class GameController {
@@ -19,7 +21,8 @@ public class GameController {
     private Label timerLabel;
     @FXML
     private GridPane gameBoard;
-
+    @FXML
+    private Label labelJugador;
     private Jugador jugador;
     private Stage stage;
     private Timer timer;
@@ -34,6 +37,19 @@ public class GameController {
         this.columnas = columnas;
 
         initializeBoard();
+    }
+
+    public void setNombreJugador(){
+        labelJugador.setText(labelJugador.getText() + jugador.getNombre());
+    }
+
+    public GameController showEstaPantalla(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new PantallaUtils().showEstaPantalla(stage, "game-view.fxml","Memorama - Juego",300,400);
+
+        //OBTENER EL CONTROLADOR DE ESTA VENTANA, PARA PODER REFRESCAR DATOS DE COMPONENTES
+        GameController controller = fxmlLoader.getController();
+
+        return controller;
     }
 
     private void initializeBoard() {
@@ -70,10 +86,6 @@ public class GameController {
                 imageViews[i][j] = imageView;
 
                 card.setGraphic(imageView);
-                // Card = boton
-                // imageView = foto de la  fruta
-                // row = fila , col = columna
-                // Matrices buttons, imageViews, revealed(matriz de que cartas estan levantadas)
                 card.setOnAction(e -> {
                     handleCardClick(card, imageView, row, col, revealed);
                 });
@@ -190,7 +202,10 @@ public class GameController {
         Platform.runLater(() -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/practica3/practicafxml/record-view.fxml"));
-                stage.setScene(new Scene(loader.load()));
+                Scene scene = new Scene(loader.load());
+                scene.getStylesheets().add(getClass().getResource("/com/example/practica3/practicafxml/styles.css").toExternalForm());
+
+                stage.setScene(scene);
 
                 RecordController recordController = loader.getController();
                 if (ganado) {
