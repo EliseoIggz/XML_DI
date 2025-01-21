@@ -19,4 +19,17 @@ public class Jugador {
     public void setTiempo(int tiempo) {
         this.tiempo = tiempo;
     }
+
+    /**
+     *
+     * @return
+     */
+    public boolean validarNombre(){
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return false;
+        }else{
+            return true;
+        }
+    }
 }
+

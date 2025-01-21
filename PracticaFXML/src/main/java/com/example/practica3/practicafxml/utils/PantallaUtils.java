@@ -19,6 +19,7 @@ public class PantallaUtils {
     public FXMLLoader showEstaPantalla(Stage stage, String vista, String titulo, int ancho, int alto) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(vista));
         Scene scene = new Scene(fxmlLoader.load(), ancho, alto);
+        scene.getStylesheets().add(getClass().getResource("/com/example/practica3/practicafxml/styles.css").toExternalForm());
         stage.setTitle(titulo);
         stage.setScene(scene);
         stage.show();
@@ -42,4 +43,5 @@ public class PantallaUtils {
         //DEVUELVE EL STAGE PARA PODER SER REUTILIZADO EN OTRA PANTALLA POR EJEMPLO.
         return stageAhora;
     }
+
 }

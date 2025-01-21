@@ -3,10 +3,14 @@ package com.example.practica3.practicafxml.controller;
 import com.example.practica3.practicafxml.model.Jugador;
 import com.example.practica3.practicafxml.model.Record;
 import com.example.practica3.practicafxml.model.RecordManager;
+import com.example.practica3.practicafxml.utils.PantallaUtils;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class RecordController {
     @FXML
@@ -34,5 +38,12 @@ public class RecordController {
         for (Record record : recordManager.getRecords()) {
             recordsListView.getItems().add(record.toString());
         }
+    }
+
+    public RecordController showEstaPantalla(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new PantallaUtils().showEstaPantalla(stage, "record-view.fxml","Records",400,400);
+        //OBTENER EL CONTROLADOR DE ESTA VENTANA, PARA PODER REFRESCAR DATOS DE COMPONENTES
+        RecordController controller = fxmlLoader.getController();
+        return controller;
     }
 }

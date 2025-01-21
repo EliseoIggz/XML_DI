@@ -5,7 +5,6 @@ import com.example.practica3.practicafxml.utils.PantallaUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -30,6 +29,13 @@ public class GameController {
     private int filas;
     private int columnas;
 
+    /**
+     *
+     * @param jugador
+     * @param stage
+     * @param filas
+     * @param columnas
+     */
     public void initGame(Jugador jugador, Stage stage, int filas, int columnas) {
         this.jugador = jugador;
         this.stage = stage;
@@ -39,12 +45,15 @@ public class GameController {
         initializeBoard();
     }
 
+    /**
+     *
+     */
     public void setNombreJugador(){
         labelJugador.setText(labelJugador.getText() + jugador.getNombre());
     }
 
     public GameController showEstaPantalla(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new PantallaUtils().showEstaPantalla(stage, "game-view.fxml","Memorama - Juego",300,400);
+        FXMLLoader fxmlLoader = new PantallaUtils().showEstaPantalla(stage, "game-view.fxml","Memorama - Juego",510,610);
 
         //OBTENER EL CONTROLADOR DE ESTA VENTANA, PARA PODER REFRESCAR DATOS DE COMPONENTES
         GameController controller = fxmlLoader.getController();
@@ -52,6 +61,9 @@ public class GameController {
         return controller;
     }
 
+    /**
+     *
+     */
     private void initializeBoard() {
         gameBoard.getChildren().clear(); // Limpiar tablero si se reutiliza
 
@@ -104,6 +116,15 @@ public class GameController {
     private Button firstCard = null;
     private ImageView firstImageView = null;
     private int firstRow = -1, firstCol = -1;
+
+    /**
+     *
+     * @param card
+     * @param imageView
+     * @param row
+     * @param col
+     * @param revealed
+     */
     private void handleCardClick(Button card,
                                  ImageView imageView,
                                  int row,
@@ -164,6 +185,11 @@ public class GameController {
         }
     }
 
+    /**
+     *
+     * @param revealed
+     * @return
+     */
     // Método para comprobar si todas las cartas están descubiertas
     private boolean isGameWon(boolean[][] revealed) {
         for (boolean[] row : revealed) {
@@ -176,6 +202,9 @@ public class GameController {
         return true;
     }
 
+    /**
+     *
+     */
     private void startTimer() {
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -194,6 +223,10 @@ public class GameController {
         }, 0, 1000);
     }
 
+    /**
+     *
+     * @param ganado
+     */
     private void endGame(boolean ganado) {
         // Detener el temporizador si todavía está activo
         if (timer != null) {
@@ -201,24 +234,16 @@ public class GameController {
         }
         Platform.runLater(() -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/practica3/practicafxml/record-view.fxml"));
-                Scene scene = new Scene(loader.load());
-                scene.getStylesheets().add(getClass().getResource("/com/example/practica3/practicafxml/styles.css").toExternalForm());
-
-                stage.setScene(scene);
-
-                RecordController recordController = loader.getController();
+                Stage stage = new Stage();
+                RecordController recordController = new RecordController().showEstaPantalla(stage);
                 if (ganado) {
                     jugador.setTiempo(45 - tiempoRestante); // Calcular tiempo total
                 }
                 recordController.showResult(jugador, ganado);
-
                 stage.show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
     }
-
-
 }
