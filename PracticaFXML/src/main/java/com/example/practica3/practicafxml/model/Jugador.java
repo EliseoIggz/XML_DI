@@ -2,7 +2,7 @@ package com.example.practica3.practicafxml.model;
 
 public class Jugador {
     private String nombre;
-    private int tiempo;
+    //private int tiempo;
 
     public Jugador(String nombre) {
         this.nombre = nombre;
@@ -12,17 +12,17 @@ public class Jugador {
         return nombre;
     }
 
-    public int getTiempo() {
-        return tiempo;
-    }
-
-    public void setTiempo(int tiempo) {
-        this.tiempo = tiempo;
-    }
+//    public int getTiempo() {
+//        return tiempo;
+//    }
+//
+//    public void setTiempo(int tiempo) {
+//        this.tiempo = tiempo;
+//    }
 
     /**
-     *
-     * @return
+     * Método para validar que el nombre no esté vacío.
+     * @return true o false
      */
     public boolean validarNombre(){
         if (nombre == null || nombre.trim().isEmpty()) {
