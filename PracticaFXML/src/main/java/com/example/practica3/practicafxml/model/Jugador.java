@@ -21,7 +21,7 @@ public class Jugador {
     }
 
     /**
-     *
+     * Metodo para validar que el nombre no este vacío
      * @return
      */
     public boolean validarNombre(){

@@ -20,6 +20,11 @@ public class RecordController {
 
     private RecordManager recordManager = new RecordManager();
 
+    /**
+     * Método para setear el mensaje del Label y agregar el objeto record a la List
+     * @param jugador
+     * @param ganado
+     */
     public void showResult(Jugador jugador, boolean ganado) {
         if (ganado) {
             int tiempoFinal = jugador.getTiempo();
@@ -33,6 +38,10 @@ public class RecordController {
         }
     }
 
+
+    /**
+     * Método para limpiar la List y volcar los nuevos datos actualizados
+     */
     private void actualizarRecords() {
         recordsListView.getItems().clear();
         for (Record record : recordManager.getRecords()) {
@@ -40,6 +49,12 @@ public class RecordController {
         }
     }
 
+    /**
+     * Método para mostrar la pantalla de records
+     * @param stage
+     * @return
+     * @throws IOException
+     */
     public RecordController showEstaPantalla(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new PantallaUtils().showEstaPantalla(stage, "record-view.fxml","Records",400,400);
         //OBTENER EL CONTROLADOR DE ESTA VENTANA, PARA PODER REFRESCAR DATOS DE COMPONENTES
