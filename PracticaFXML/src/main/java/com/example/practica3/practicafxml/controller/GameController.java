@@ -30,7 +30,7 @@ public class GameController {
     private int columnas;
 
     /**
-     *
+     * Metodo que establece los valores del controlador de la partida y llama al metodo para cargar los elementos de la ventana de juego
      * @param jugador
      * @param stage
      * @param filas
@@ -46,12 +46,18 @@ public class GameController {
     }
 
     /**
-     *
+     * Metodo para visualizar en la ventana de la aprtida el nombre introducido en la ventana anterior
      */
     public void setNombreJugador(){
         labelJugador.setText(labelJugador.getText() + jugador.getNombre());
     }
 
+    /**
+     * Método para cargar esta ventana desde el controlador de esta clase en la ventana anterior
+     * @param stage
+     * @return
+     * @throws IOException
+     */
     public GameController showEstaPantalla(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new PantallaUtils().showEstaPantalla(stage, "game-view.fxml","Memorama - Juego",510,610);
 
@@ -62,6 +68,7 @@ public class GameController {
     }
 
     /**
+     * Método para cargar todos los elementos y gestionar la lógica del juego.
      *
      */
     private void initializeBoard() {
@@ -118,7 +125,8 @@ public class GameController {
     private int firstRow = -1, firstCol = -1;
 
     /**
-     *
+     *  Método para generar la matriz de imagenes y gestionar los clics en los botones de cada imagen
+     *      asi como darles la vuelta y que se mantengan si coinciden.
      * @param card
      * @param imageView
      * @param row
@@ -186,11 +194,10 @@ public class GameController {
     }
 
     /**
-     *
+     * Método para comprobar si todas las cartas están descubiertas
      * @param revealed
      * @return
      */
-    // Método para comprobar si todas las cartas están descubiertas
     private boolean isGameWon(boolean[][] revealed) {
         for (boolean[] row : revealed) {
             for (boolean cell : row) {
@@ -203,7 +210,7 @@ public class GameController {
     }
 
     /**
-     *
+     * Método para iniciar el contador de la partida y que acaabe la partida si el tiempo se agota.
      */
     private void startTimer() {
         timer = new Timer();
@@ -224,8 +231,8 @@ public class GameController {
     }
 
     /**
-     *
-     * @param ganado
+     * Método para acabar la partida y abrir la ventana de records con la puntuacion obtenida.
+     * @param ganado se usa en true para diferenciar si se acabo la partida y tienes puntuacion que ingresar en la lista de records o no
      */
     private void endGame(boolean ganado) {
         // Detener el temporizador si todavía está activo
