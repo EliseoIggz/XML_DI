@@ -22,5 +22,9 @@ public interface DatabaseOperations {
 
     // Método para obtener todos los usuarios
     //List<User> obtenerTodosUsuarios();
+
+    boolean guardarRecords(Record record);
+    boolean cargarRecords();
+
 }
 
