@@ -3,12 +3,16 @@ package com.example.practica3.practicafxml.controller;
 import com.example.practica3.practicafxml.model.Jugador;
 import com.example.practica3.practicafxml.utils.PantallaUtils;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -28,6 +32,47 @@ public class GameController {
     private int tiempoRestante = 45; // Segundos del temporizador
     private int filas;
     private int columnas;
+    @FXML
+    private Button botonVolver;
+    @FXML
+    private Button botonReiniciar;
+
+    @FXML
+    void volverAlMenu(ActionEvent event) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Volver al menú");
+        alert.setHeaderText("¿Seguro que quieres volver al menú?");
+        alert.setContentText("Perderás el progreso de esta partida.");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            Stage stage = (Stage) botonVolver.getScene().getWindow();
+            new HelloController().showEstaPantalla(stage);
+        }
+    }
+
+    /**
+     * Metodo para reiniciar la partida
+     * Detenemos el contador, reiniciamos el parametro del tiempo
+     *  e iniciamos partida de nuevo
+     * @param event
+     */
+    @FXML
+    void reiniciarPartida(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Reinicio de partida");
+        alert.setHeaderText("¿Seguro que quieres reiniciar la partida?");
+        alert.setContentText("Perderás el progreso de esta partida.");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            if (timer != null) {
+                timer.cancel();
+            }
+            gameBoard.getChildren().clear();
+            tiempoRestante = 45;
+            timerLabel.setText("Tiempo: " + tiempoRestante);
+            initializeBoard();
+        }
+    }
 
     /**
      * Metodo que establece los valores del controlador de la partida y llama al metodo para cargar los elementos de la ventana de juego
@@ -73,6 +118,19 @@ public class GameController {
      */
     private void initializeBoard() {
         gameBoard.getChildren().clear(); // Limpiar tablero si se reutiliza
+
+        // Acceso rapido con al tecla ESC para volver al menu
+        gameBoard.getScene().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                try {
+                    // Crear un ActionEvent ficticio para llamar a volverAlMenu
+                    ActionEvent dummyEvent = new ActionEvent();
+                    volverAlMenu(dummyEvent);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         // Generar una lista de imágenes duplicadas para formar los pares
         List<Image> images = new ArrayList<>();
@@ -137,8 +195,6 @@ public class GameController {
                                  ImageView imageView,
                                  int row,
                                  int col,
-//                                 Button[][] buttons,
-//                                 ImageView[][] imageViews,
                                  boolean[][] revealed) {
 
         if (revealed[row][col] || card == firstCard) {
@@ -253,4 +309,5 @@ public class GameController {
             }
         });
     }
+
 }
