@@ -8,27 +8,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RecordManagerTest {
     private String url = "jdbc:sqlite:data/bbddPrueba.db";
-
     private Connection conn;
-
     private RecordManager recordManager;
 
     @BeforeEach
     public void conectarBD() throws SQLException {
         conn  = DriverManager.getConnection(url);
         recordManager = new RecordManager();
-    }
-
-    @AfterEach
-    public void cerrarBD() {
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Test
@@ -53,10 +43,15 @@ class RecordManagerTest {
             System.out.println("Hubo un error al cargar los records.");
         }
 
-        if (!recordManager.getRecords().isEmpty()) {
-            System.out.println("Se cargaron " + recordManager.getRecords().size() + " records.");
-        } else {
-            System.out.println("No se cargaron records.");
+        assertTrue(!recordManager.getRecords().isEmpty(),"Se cargaron " + recordManager.getRecords().size() + " records.");
+    }
+
+    @AfterEach
+    public void cerrarBD() {
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
