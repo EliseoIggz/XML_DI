@@ -119,6 +119,25 @@ public class GameController {
     private void initializeBoard() {
         gameBoard.getChildren().clear(); // Limpiar tablero si se reutiliza
 
+        // Agregar atajos de teclado a nivel de la escena
+        gameBoard.getScene().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                try {
+                    // Atajo ESC para volver al menú
+                    ActionEvent dummyEvent = new ActionEvent();
+                    volverAlMenu(dummyEvent);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (event.getCode() == KeyCode.R && event.isControlDown()) {
+                // Atajo Ctrl+R para reiniciar la partida
+                ActionEvent dummyEvent = new ActionEvent();
+                reiniciarPartida(dummyEvent);
+            }
+        });
+
         // Acceso rapido con al tecla ESC para volver al menu
         gameBoard.getScene().setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
