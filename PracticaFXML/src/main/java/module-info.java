@@ -4,6 +4,8 @@ module com.example.practica3.practicafxml {
     requires java.sql;
 
     requires org.controlsfx.controls;
+    requires kernel;
+    requires layout;
 
     opens com.example.practica3.practicafxml to javafx.fxml;
     exports com.example.practica3.practicafxml;
